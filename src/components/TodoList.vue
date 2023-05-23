@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-[#F5F5F5] dark:bg-slate-800 w-[100%] min-h-[100vh] flex flex-col items-center justify-center"
+    class="bg-[#F5F5F5] dark:bg-[#1e1e20] w-[100%] min-h-[100vh] flex flex-col items-center justify-center"
   >
     <div class="flex">
       <h1 class="text-[2rem] dark:text-[#F5F5F5]">待辦清單</h1>
@@ -10,10 +10,10 @@
     </div>
 
     <div
-      class="w-[50%] dark:bg-slate-700 max-w-[400px] min-w-[320px] grid justify-items-center justify-center p-4 rounded-[30px] shadow-md shadow-gray-500/30"
+      class="w-[50%] dark:bg-[#343434] max-w-[400px] min-w-[320px] grid justify-items-center justify-center p-4 rounded-[30px] shadow-md shadow-gray-500/30"
     >
       <div class="w-[100%] flex justify-center">
-        <form class="w-[320px] flex justify-center" @submit.prevent="addTodo">
+        <form class="w-[320px] flex justify-center" @submit.prevent="addTodo()">
           <input
             v-model="newTodo"
             class="border-2 border-black mr-2 rounded-lg w-[80%] pl-2"
@@ -28,7 +28,7 @@
       >
         <ul class="w-[100%]">
           <li
-            v-for="(todo, index) in todos"
+            v-for="todo in todos"
             class="w-[100%] flex decoration-[3px] dark:text-[#F5F5F5]"
             :class="{ 'line-through': todo.isChecked }"
           >
@@ -91,10 +91,9 @@ const edit = ref({});
 const editText = ref({});
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
-todos.value = JSON.parse(localStorage.getItem("todos") || "[]");
 
 const addTodo = () => {
-  todos.value.push({ id: id++, text: newTodo.value, isChecked: false });
+  todos.value.push({ id: id++, text: newTodo.value });
   newTodo.value = "";
   saveTodosToLocalStorage();
 };
@@ -108,7 +107,6 @@ const removeTodo = (todo) => {
 const editTodo = (todo) => {
   edit.value[todo.id] = true;
   editText.value[todo.id] = todo.text;
-  saveTodosToLocalStorage();
 };
 
 const doneTodo = (todo) => {
@@ -120,6 +118,7 @@ const doneTodo = (todo) => {
 const saveTodosToLocalStorage = () => {
   localStorage.setItem("todos", JSON.stringify(todos.value));
 };
+todos.value = JSON.parse(localStorage.getItem("todos") || "[]");
 
 const toggleChecked = (todo) => {
   todo.isChecked = !todo.isChecked;
